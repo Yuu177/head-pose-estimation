@@ -48,12 +48,13 @@ int main(int argc, char **argv) {
   std::vector<cv::Point3d> nose_end_point3D;
   std::vector<cv::Point2d> nose_end_point2D;
 
-  // Nose tip 的 3d 点坐标为 (0.0f, 0.0f, 0.0f)
-  // 保持 x，y 轴的坐标不变，修改 z' 轴的坐标。线段 zz' 就是鼻子的方向
+  // Nose tip 的 3d 点坐标为 (0, 0, 0)
+  // 保持 x，y 轴的坐标不变，修改 z 轴的坐标为 z'。
+  // 线段 zz' 就是鼻子的方向（人脸朝向）
   nose_end_point3D.push_back(cv::Point3d(0, 0, 1000.0));
 
   // 将 3d 点投影到图像上
-  // 我们得到 R 和 T 矩阵后，就可以通过一个 3d 点转换为图片上的 2d 点
+  // 我们得到 R 和 t 矩阵后，就可以通过一个 3d 点转换为图片上的 2d 点
   cv::projectPoints(nose_end_point3D, rotation_vector, translation_vector,
                     camera_matrix, dist_coeffs, nose_end_point2D);
 
@@ -62,7 +63,7 @@ int main(int argc, char **argv) {
     cv::circle(im, image_points[i], 3, cv::Scalar(0, 0, 255), -1);
   }
 
-  // 画人脸朝向方向
+  // 画人脸朝向方向，即上面所说的线段 zz'
   cv::line(im, image_points[0], nose_end_point2D[0], cv::Scalar(255, 0, 0), 2);
 
   std::cout << "Rotation Vector " << std::endl << rotation_vector << std::endl;
